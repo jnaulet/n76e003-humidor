@@ -1,0 +1,51 @@
+#
+# picoRTOS standalone makefile (auto-generated)
+#
+path := $(dir $(lastword $(MAKEFILE_LIST)))
+
+c_src-y += $(path)arch/8051/mach-n76e003/timer-wkt.c
+c_src-y += $(path)arch/8051/mach-n76e003/interrupt.c
+c_src-y += $(path)arch/8051/picoRTOS_port.c
+c_src-y += $(path)scheduler/picoRTOS.c
+c_src-y += $(path)drivers/clock/clock-n76e003.c
+c_src-y += $(path)staging/drivers/gpio/gpio-n76e003.c
+c_src-y += $(path)staging/drivers/mux/mux-n76e003.c
+c_src-y += $(path)staging/drivers/pwm/pwm-n76e003.c
+c_src-y += $(path)staging/drivers/twi/twi-n76e003.c
+c_src-y += $(path)staging/drivers/uart/uart-n76e003.c
+
+h_dep-y += $(path)arch/8051/include/errno.h
+h_dep-y += $(path)arch/8051/mach-n76e003/picoRTOS_device.h
+h_dep-y += $(path)arch/8051/picoRTOS_types.h
+h_dep-y += $(path)arch/include/picoRTOS_port.h
+h_dep-y += $(path)drivers/clock/clock-n76e003.h
+h_dep-y += $(path)drivers/include/clock.h
+h_dep-y += $(path)drivers/include/gpio.h
+h_dep-y += $(path)drivers/include/mux.h
+h_dep-y += $(path)drivers/include/pwm.h
+h_dep-y += $(path)drivers/include/twi.h
+h_dep-y += $(path)drivers/include/uart.h
+h_dep-y += $(path)picoRTOS.h
+h_dep-y += $(path)staging/drivers/gpio/gpio-n76e003.h
+h_dep-y += $(path)staging/drivers/mux/mux-n76e003.h
+h_dep-y += $(path)staging/drivers/pwm/pwm-n76e003.h
+h_dep-y += $(path)staging/drivers/twi/twi-n76e003.h
+h_dep-y += $(path)staging/drivers/uart/uart-n76e003.h
+
+a_src-y += $(path)arch/8051/mach-n76e003/startup.S
+a_src-y += $(path)arch/8051/picoRTOS_portasm.S
+
+
+include-y += -I$(path)
+include-y += -I$(path)arch/8051/
+include-y += -I$(path)arch/8051/include/
+include-y += -I$(path)arch/8051/mach-n76e003/
+include-y += -I$(path)arch/include/
+include-y += -I$(path)drivers/clock/
+include-y += -I$(path)drivers/include/
+include-y += -I$(path)scheduler/
+include-y += -I$(path)staging/drivers/gpio/
+include-y += -I$(path)staging/drivers/mux/
+include-y += -I$(path)staging/drivers/pwm/
+include-y += -I$(path)staging/drivers/twi/
+include-y += -I$(path)staging/drivers/uart/

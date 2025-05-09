@@ -1,0 +1,26 @@
+/*
+ * Automatically generated C config: don't edit
+ * OpenPicoRTOS v1.9.x Configuration
+ */
+#define CONFIG_TICK_HZ 100
+#define CONFIG_MUX_N76E003 1
+#define CONFIG_GPIO_N76E003 1
+#define CONFIG_CLOCK_N76E003 1
+#define CONFIG_TWI_N76E003 1
+#define CONFIG_MACH_N76E003 1
+#define CONFIG_PWM_N76E003 1
+#define CONFIG_CC_OPTIMIZE_FOR_SIZE 1
+#define CONFIG_EXTRA_CFLAGS ""
+#define CONFIG_DEADLOCK_COUNT 1000
+#define CONFIG_LDSCRIPT ""
+#define CONFIG_8051 1
+#define CONFIG_MAP 1
+#define CONFIG_UART_N76E003 1
+#define CONFIG_CC_SDCC 1
+#define CONFIG_DEFAULT_STACK_COUNT 64
+#define CONFIG_SINGLE_CORE 1
+#define CONFIG_TASK_COUNT 3
+#define CONFIG_CC "sdcc"
+#define CONFIG_STAGING 1
+#define CONFIG_EXTRA_LDFLAGS ""
+#define CONFIG_CROSS_COMPILE ""

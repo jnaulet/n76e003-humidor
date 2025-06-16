@@ -2,6 +2,7 @@
 #include "picoRTOS_device.h"
 
 #include "n76e003.h"
+#include "aht10.h"
 
 static bool needs_misting = false;
 
@@ -84,46 +85,6 @@ static void uart_send_hex(struct uart *UART, char *buf, size_t n)
         uart_send_hex_c(UART, *buf++);
 }
 
-static int twi_send(struct twi *TWI, char *buf, size_t n, int flags)
-{
-    int deadlock = 100;
-
-    for (int i = 0; i < n; ) {
-        int res;
-        if ((res = twi_write(TWI, &buf[i], sizeof(buf) - i, flags)) < 0 &&
-            deadlock-- != 0) {
-            picoRTOS_postpone();
-            continue;
-        }
-
-        /* inc */
-        picoRTOS_assert(deadlock != -1, return -EIO);
-        i += res;
-    }
-
-    return (int)n;
-}
-
-static int twi_recv(struct twi *TWI, char *buf, size_t n, int flags)
-{
-    int deadlock = 100;
-
-    for (int i = 0; i < n; ) {
-        int res;
-        if ((res = twi_read(TWI, &buf[i], n - (size_t)i, flags)) < 0 &&
-            deadlock-- != 0) {
-            picoRTOS_postpone();
-            continue;
-        }
-
-        /* inc */
-        picoRTOS_assert(deadlock != -1, return -EIO);
-        i += res;
-    }
-
-    return (int)n;
-}
-
 #define HR_TEMP_TABLE_COUNT 50
 static const int hr_temp_table[HR_TEMP_TABLE_COUNT] = {
     97, 97, 97, 97, 97, 97, 97, 97, 97, 97, /* 0-10°C */
@@ -141,44 +102,37 @@ static void sensors_main(void *priv)
     struct n76e003 *ctx = (struct n76e003*)priv;
     picoRTOS_tick_t ref = picoRTOS_get_tick();
 
+    static struct aht10 aht10;
+    (void)aht10_init(&aht10, &ctx->I2C, AHT10_DEFAULT_ADDR);
+
     /* sensor needs a >= 100ms delay */
     picoRTOS_sleep(PICORTOS_DELAY_MSEC(120l));
 
     for (;;) {
 
-        int res;
-        static char buf[8];
+        struct aht10_measurement m;
+        int deadlock = CONFIG_DEADLOCK_COUNT;
 
-        /* send mesurement command */
-        if ((res = twi_send(&ctx->I2C, "\xac\x33\x00", (size_t)3, TWI_F_START | TWI_F_STOP)) < 0) {
-            uart_send(&ctx->UART0, ":write error\r\n", (size_t)14);
-            goto next;
+        while (aht10_read(&aht10, &m) < 0 && deadlock-- != 0) {
+            /* reduce power consumption */
+            if (aht10.state == AHT10_STATE_MEASURE_WAIT) picoRTOS_sleep(PICORTOS_DELAY_MSEC(80l));
+            else picoRTOS_postpone();
         }
 
-        /* wait until measurement is done */
-        picoRTOS_sleep(PICORTOS_DELAY_MSEC(80l));
-
-        if ((res = twi_recv(&ctx->I2C, buf, (size_t)7, TWI_F_START | TWI_F_STOP)) < 0) {
-            uart_send(&ctx->UART0, ":read error\r\n", (size_t)13);
+        if (deadlock < 0) {
+            uart_send(&ctx->UART0, ":r/w error\r\n", (size_t)12);
             goto next;
         }
-
-        int rh = (int)((((unsigned long)buf[1] << 12 |
-                         (unsigned long)buf[2] << 4 |
-                         (unsigned long)buf[3] >> 4) * 100ul) >> 20);
-        int t = (int)((((unsigned long)(buf[3] & 0xf) << 16 |
-                        (unsigned long)buf[4] << 8 |
-                        (unsigned long)buf[5]) * 200ul) >> 20) - 50 + TEMP_CORRECTION;
 
         /* display result (hopefully) */
         uart_send(&ctx->UART0, ": 0x", (size_t)5);
-        uart_send_hex_c(&ctx->UART0, rh);
+        uart_send_hex_c(&ctx->UART0, m.relative_humidity);
         uart_send(&ctx->UART0, " % - 0x", (size_t)8);
-        uart_send_hex_c(&ctx->UART0, t);
+        uart_send_hex_c(&ctx->UART0, m.temperature);
         uart_send(&ctx->UART0, " °C", (size_t)4);
 
         /* produce mist */
-        if (rh < hr_temp_table[t]) {
+        if (m.relative_humidity < hr_temp_table[m.temperature]) {
             needs_misting = true;
             uart_send(&ctx->UART0, " - X", (size_t)4);
         }else

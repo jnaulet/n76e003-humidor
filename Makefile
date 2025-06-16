@@ -1,4 +1,5 @@
 include picoRTOS/Makefile.in
+include ../pico-sensors/aht10/Makefile.in
 
 SDCC := sdcc
 SDAS := sdas8051
@@ -8,10 +9,6 @@ target := n76e003-humidor.ihx
 CFLAGS := --std-c99 --fomit-frame-pointer --opt-code-size
 CFLAGS += -mmcs51 --model-large --stack-auto --int-long-reent
 CFLAGS += --xram-size 768 --code-size 18432
-CFLAGS += -D"__ATTRIBUTE_ALIGNED__(x)="
-CFLAGS +=-D"__ATTRIBUTE_UNUSED__="
-CFLAGS +=-D"__ATTRIBUTE_NAKED__=__naked"
-CFLAGS +=-D"__ATTRIBUTE_PACKED__="
 CFLAGS += -Iinclude $(include-y)
 
 AFLAGS := -Iinclude $(include-y) -los

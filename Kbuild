@@ -6,6 +6,8 @@ target := n76e003-humidor.ihx
 c_src-y += main.c
 c_src-y += n76e003.c
 
+include ../pico-sensors/aht10/Makefile.in
+
 # This makefile will be included by OpenPicoRTOS during build, it is safer to use
 # the 'skip-makefile' keyword to avoid local targets inclusion
 ifneq ($(skip-makefile),1)

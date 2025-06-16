@@ -68,16 +68,8 @@ static int pwm_init(/*@partial@*/ struct n76e003 *ctx)
 
 static int i2c_init(/*@partial@*/ struct n76e003 *ctx)
 {
-    const struct twi_settings I2C_settings = {
-        TWI_BITRATE_STANDARD,
-        TWI_MODE_MASTER,
-        (twi_addr_t)0x38
-    };
-
     /* pins 1.3 & 1.4 (i2cpx = false) */
     (void)twi_n76e003_init(&ctx->I2C, CLOCK_N76E003_FSYS, false);
-    (void)twi_setup(&ctx->I2C, &I2C_settings);
-
     return 0;
 }
 

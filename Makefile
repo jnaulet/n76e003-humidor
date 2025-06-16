@@ -1,5 +1,5 @@
 include picoRTOS/Makefile.in
-include ../pico-sensors/aht10/Makefile.in
+include pico-sensors/aht10/Makefile.in
 
 SDCC := sdcc
 SDAS := sdas8051

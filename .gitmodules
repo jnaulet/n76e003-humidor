@@ -1,0 +1,3 @@
+[submodule "pico-sensors"]
+	path = pico-sensors
+	url = https://github.com/jnaulet/pico-sensors.git

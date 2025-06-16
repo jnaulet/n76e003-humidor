@@ -16,7 +16,7 @@ int pwm_n76e003_init(/*@out@*/ struct pwm_n76e003 *ctx, clock_id_t clkid);
 int pwm_n76e003_set_period(struct pwm_n76e003 *ctx, unsigned long pwmp);
 
 struct pwm {
-    struct pwm_n76e003 *parent;
+    /*@temp@*/ struct pwm_n76e003 *parent;
     unsigned int channel;
 };
 

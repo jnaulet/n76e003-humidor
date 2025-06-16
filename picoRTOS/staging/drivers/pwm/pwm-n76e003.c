@@ -48,7 +48,7 @@ static unsigned char PWM5H;
 /*@unused@*/ static unsigned char PIOCON1;
 static unsigned char PMEN;
 static unsigned char PMD;
-static unsigned char PNP;
+/*@unused@*/ static unsigned char PNP;
 #endif
 
 #define PWMCON0_PWMRUN (1u << 7)
@@ -120,8 +120,10 @@ int pwm_set_period(struct pwm *ctx, pwm_period_us_t period)
     picoRTOS_assert(period > 0, return -EINVAL);
 
     clock_freq_t freq = clock_get_freq(ctx->parent->clkid);
+
     picoRTOS_assert(freq > 0, return -EIO);
     unsigned long pwmp = ((unsigned long)freq / 1000000ul) * period;
+
     picoRTOS_assert(pwmp < 65536ul, return -EINVAL);
 
     /* set PWMPx, at last */
@@ -199,6 +201,7 @@ int pwm_set_duty_cycle(struct pwm *ctx, pwm_duty_cycle_t duty_cycle)
     return 0;
 }
 
+/* cppcheck-suppress [constParameterPointer] */
 void pwm_start(struct pwm *ctx)
 {
     PMEN &= ~(1u << ctx->channel);
@@ -206,6 +209,7 @@ void pwm_start(struct pwm *ctx)
     PWMCON0 |= PWMCON0_PWMRUN;
 }
 
+/* cppcheck-suppress [constParameterPointer] */
 void pwm_stop(struct pwm *ctx)
 {
     PMEN |= (1u << ctx->channel);

@@ -48,7 +48,7 @@ typedef uint16_t twi_addr_t;
  *
  * TWI_F_START - Begin with a start
  * TWI_F_STOP - End with a stop
- * TWI_F_NACK - Send NACK
+ * TWI_F_NACK - End with a NACK
  * TWI_F_GC   - General call
  */
 #define TWI_F_START (1 << 0)

@@ -225,6 +225,7 @@ static int uart1_read(char *c)
     return -EAGAIN;
 }
 
+/* cppcheck-suppress [constParameterPointer] */
 int uart_read(struct uart *ctx, char *buf, size_t n)
 {
     picoRTOS_assert(n > 0, return -EINVAL);

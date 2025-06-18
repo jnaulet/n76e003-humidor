@@ -2,8 +2,9 @@
  * Automatically generated C config: don't edit
  * OpenPicoRTOS v1.9.x Configuration
  */
-#define CONFIG_TICK_HZ 100
+#define CONFIG_TICK_HZ 40
 #define CONFIG_MUX_N76E003 1
+#define CONFIG_LITE 1
 #define CONFIG_GPIO_N76E003 1
 #define CONFIG_CLOCK_N76E003 1
 #define CONFIG_TWI_N76E003 1
@@ -18,7 +19,6 @@
 #define CONFIG_UART_N76E003 1
 #define CONFIG_CC_SDCC 1
 #define CONFIG_DEFAULT_STACK_COUNT 64
-#define CONFIG_SINGLE_CORE 1
 #define CONFIG_TASK_COUNT 3
 #define CONFIG_CC "sdcc"
 #define CONFIG_STAGING 1
